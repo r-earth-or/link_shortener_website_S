@@ -47,11 +47,13 @@ func main() {
 				c.JSON(500, gin.H{
 					"message": err.Error(),
 				})
+				return
 			}
 			c.JSON(
 				200, gin.H{
 					"shortUrl": shortUrl.ShortUrl,
 				})
+			return
 		}
 		shortUrl, err := models.CreateLink(longUrl)
 		if err != nil {
@@ -64,6 +66,7 @@ func main() {
 			200, gin.H{
 				"shortUrl": shortUrl,
 			})
+		return
 	})
 	r.GET("/api/logs", func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -74,6 +77,7 @@ func main() {
 				c.JSON(500, gin.H{
 					"message": err.Error(),
 				})
+				return
 			}
 			c.JSON(200, logs)
 		} else if models.IfLongUrlExist(queryTarget) {
@@ -82,22 +86,27 @@ func main() {
 				c.JSON(500, gin.H{
 					"message": err.Error(),
 				})
+				return
 			}
 			logs, err := models.GetTargetData(shortUrl.ShortUrl)
 			if err != nil {
 				c.JSON(500, gin.H{
 					"message": err.Error(),
 				})
+				return
 			}
 			c.JSON(200, logs)
+			return
 		} else {
 			logs, err := models.GetTargetData(queryTarget)
 			if err != nil {
 				c.JSON(500, gin.H{
 					"message": err.Error(),
 				})
+				return
 			}
 			c.JSON(200, logs)
+			return
 		}
 	})
 	r.GET("/:shortUrl", func(c *gin.Context) {
@@ -107,6 +116,7 @@ func main() {
 			c.JSON(500, gin.H{
 				"message": err.Error(),
 			})
+			return
 		} else {
 			err = models.CreateLog(c.ClientIP(), link.ID)
 			if err != nil {
