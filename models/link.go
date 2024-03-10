@@ -104,3 +104,19 @@ func GetRandomString(i int) string {
 	return string(result)
 
 }
+func GetAllData() ([]Link, error) {
+	var links []Link
+	err := database.DB.Find(&links).Error
+	if err != nil {
+		return links, err
+	}
+	return links, nil
+}
+func GetTargetData(shortUrl string) (Link, error) {
+	var link Link
+	err := database.DB.Where("short_url = ?", shortUrl).First(&link).Error
+	if err != nil {
+		return link, err
+	}
+	return link, nil
+}

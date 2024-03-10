@@ -65,7 +65,41 @@ func main() {
 				"shortUrl": shortUrl,
 			})
 	})
-
+	r.GET("/api/logs", func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		queryTarget := c.Query("target")
+		if queryTarget == "all" {
+			logs, err := models.GetAllData()
+			if err != nil {
+				c.JSON(500, gin.H{
+					"message": err.Error(),
+				})
+			}
+			c.JSON(200, logs)
+		} else if models.IfLongUrlExist(queryTarget) {
+			shortUrl, err := models.GetShortUrl(queryTarget)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"message": err.Error(),
+				})
+			}
+			logs, err := models.GetTargetData(shortUrl.ShortUrl)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"message": err.Error(),
+				})
+			}
+			c.JSON(200, logs)
+		} else {
+			logs, err := models.GetTargetData(queryTarget)
+			if err != nil {
+				c.JSON(500, gin.H{
+					"message": err.Error(),
+				})
+			}
+			c.JSON(200, logs)
+		}
+	})
 	r.GET("/:shortUrl", func(c *gin.Context) {
 		shortUrl := c.Param("shortUrl")
 		link, err := models.GetOriginUrl(shortUrl)

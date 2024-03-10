@@ -1,0 +1,6 @@
+GET http://localhost:8080/api/logs?target=https://google.com
+Accept: application/json
+
+###
+GET http://localhost:8080/api/logs?target=cxKUaZ
+Accept: application/json

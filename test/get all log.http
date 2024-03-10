@@ -1,0 +1,6 @@
+GET http://localhost:8080/api/logs?target=all
+Accept: application/json
+
+###
+
+###
