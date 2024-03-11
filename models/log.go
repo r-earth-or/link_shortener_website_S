@@ -2,6 +2,7 @@ package models
 
 import (
 	"Link_shortener_website_S/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -22,6 +23,8 @@ func CreateLog(userIp string, urlId int) error {
 	if err != nil {
 		return err
 	}
+	// 更新link表中的clicks和last_click_time
+	err = database.DB.Model(&Link{}).Where("id = ?", urlId).Update("clicks", gorm.Expr("clicks + ?", 1)).Update("last_click_t_ime", time.Now().Unix()).Error
 	return nil
 }
 func GetALlLogs() ([]Log, error) {
